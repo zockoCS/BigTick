@@ -2,5 +2,9 @@ package bigTick.options;
 
 public enum options
 {
-	LANGUAGE;
+	LANGUAGE,
+	WINDOW_WIDTH,
+	WINDOW_HEIGHT,
+	WINDOW_X,
+	WINDOW_Y;
 }
