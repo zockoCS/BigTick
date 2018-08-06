@@ -6,14 +6,20 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 
 import bigTick.options.OptionManager;
 import bigTick.options.langs;
+import bigTick.options.options;
 
 public class GUI
 {
@@ -97,8 +103,33 @@ public class GUI
 		tpOptions.setFont(new Font("Monospace", Font.BOLD, 30));
 		
 		JPanel pGeneral = new JPanel();
+		pGeneral.setSize(tpOptions.getWidth(), 1080);
+		pGeneral.setLocation(0, 0);
+		pGeneral.setLayout(null);
+		int iGeneral = 0;
+		
+		JComboBox<String> cbLangs = new JComboBox<>();
+		
+		for (File langFile : new File("languages").listFiles())
+		{
+			cbLangs.addItem(langFile.getName().replace(".lang", ""));
+		}
+		
+		cbLangs.setSelectedItem(om.getOption(options.LANGUAGE));
 
-		tpOptions.addTab(om.getLang(langs.TAB_OPTIONS_GENERAL), pGeneral);
+		addOption(pGeneral, iGeneral, om.getLang(langs.NAME_OPTIONS_LANGUAGE), cbLangs);
+		
+		cbLangs.setFont(new Font("Monospace", Font.PLAIN, (int) (cbLangs.getHeight() * 0.7)));
+		
+		JScrollPane spGeneral = new JScrollPane();
+		spGeneral.setSize(tpOptions.getWidth(), tpOptions.getHeight());
+		spGeneral.setBorder(null);
+		spGeneral.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		spGeneral.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		spGeneral.setWheelScrollingEnabled(true);
+		spGeneral.setViewportView(pGeneral);
+
+		tpOptions.addTab(om.getLang(langs.TAB_OPTIONS_GENERAL), spGeneral);
 		
 		JPanel pGraphics = new JPanel();
 		
@@ -116,6 +147,20 @@ public class GUI
 		
 		pOptionsMenu.add(tpOptions);
 		
+		JButton btnApply = new JButton(om.getLang(langs.BTN_APPLY));
+		btnApply.setSize(width / 7, height / 20);
+		btnApply.setLocation(tpOptions.getX(), (tpOptions.getY() + tpOptions.getHeight()) + (height - tpOptions.getHeight() - tpOptions.getY() - btnApply.getHeight()) / 2);
+		btnApply.setFont(new Font("Monospace", Font.BOLD, (int) (btnApply.getHeight() * 0.7)));
+		btnApply.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				om.setOption(options.LANGUAGE, cbLangs.getSelectedItem());
+			}
+		});
+		
+		pOptionsMenu.add(btnApply);
+		
 		JButton btnBack = new JButton(om.getLang(langs.BTN_BACK));
 		btnBack.setSize(width / 7, height / 20);
 		btnBack.setLocation(width - btnBack.getWidth() - tpOptions.getX(), (tpOptions.getY() + tpOptions.getHeight()) + (height - tpOptions.getHeight() - tpOptions.getY() - btnBack.getHeight()) / 2);
@@ -131,6 +176,29 @@ public class GUI
 		pOptionsMenu.add(btnBack);
 		
 		return pOptionsMenu;
+	}
+	
+	private void addOption(JPanel pParent, int iParent, String name, Component value)
+	{
+		JPanel pOption = new JPanel();
+		pOption.setLayout(null);
+		pOption.setSize(pParent.getWidth(), pParent.getHeight() / 30);
+		pOption.setLocation(10, 10 + iParent * pOption.getHeight());
+		
+		JLabel lName = new JLabel(name);
+		lName.setSize((int) (pOption.getWidth() * 0.8), pOption.getHeight());
+		lName.setLocation(0, 0);
+		lName.setFont(new Font("Monospace", Font.PLAIN, (int) (lName.getHeight() * 0.7)));
+		
+		pOption.add(lName);
+		
+		value.setSize((int) (pOption.getWidth() * 0.2), pOption.getHeight());
+		value.setLocation(pOption.getWidth() - value.getWidth() - (pOption.getWidth() / 50), 0);
+		
+		pOption.add(value);
+		
+		pParent.add(pOption);
+		iParent++;
 	}
 
 	public void visible()
