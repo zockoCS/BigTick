@@ -3,11 +3,13 @@ package bigTick.gui;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -52,6 +54,7 @@ public class GUI
 
 		frame.getContentPane().add(ContentCards.MAINMENU.name(), getMainMenu());
 		frame.getContentPane().add(ContentCards.OPTIONS.name(), getOptionsMenu());
+		frame.getContentPane().add(ContentCards.START.name(), getStartMenu());
 	}
 
 	private Component getMainMenu()
@@ -60,6 +63,19 @@ public class GUI
 		pMainMenu.setSize(frame.getSize());
 		pMainMenu.setLocation(0, 0);
 		pMainMenu.setLayout(null);
+		
+		JButton btnStart = new JButton(om.getLang(langs.BTN_START));
+		btnStart.setSize(width / 5, height / 25);
+		btnStart.setLocation((width - btnStart.getWidth()) / 2, height / 25 * 16);
+		btnStart.setFont(new Font("Monospace", Font.BOLD, (int) (btnStart.getHeight() * 0.7)));
+		btnStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				clContent.show(frame.getContentPane(), ContentCards.START.name());
+			}
+		});
+		pMainMenu.add(btnStart);
 		
 		JButton btnOptions = new JButton(om.getLang(langs.BTN_OPTIONS));
 		btnOptions.setSize(width / 5, height / 25);
@@ -176,6 +192,84 @@ public class GUI
 		pOptionsMenu.add(btnBack);
 		
 		return pOptionsMenu;
+	}
+
+	private Component getStartMenu()
+	{
+		JPanel pStartMenu = new JPanel();
+		pStartMenu.setSize(frame.getSize());
+		pStartMenu.setLocation(0, 0);
+		pStartMenu.setLayout(null);
+		
+		JButton btnOneVsOne = new JButton();
+		btnOneVsOne.setSize((int) (width / 3 * 0.9), (int) (height * 0.85));
+		btnOneVsOne.setLocation((width - (3 * btnOneVsOne.getWidth())) / 4, (int) (height * 0.05));
+		
+		ImageIcon iconOneVsOne = new ImageIcon("images/1vs1.png");
+		Image imgOneVsOne = iconOneVsOne.getImage().getScaledInstance(btnOneVsOne.getWidth(), btnOneVsOne.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon iconOneVsOneScale = new ImageIcon(imgOneVsOne);
+		
+		btnOneVsOne.setIcon(iconOneVsOneScale);
+		btnOneVsOne.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		pStartMenu.add(btnOneVsOne);
+		
+		JButton btnOneVsCom = new JButton("1vsCom");
+		btnOneVsCom.setSize((int) (width / 3 * 0.9), (int) (height * 0.85));
+		btnOneVsCom.setLocation(((width - (3 * btnOneVsCom.getWidth())) / 4) * 2 + btnOneVsOne.getWidth(), (int) (height * 0.05));
+		
+		ImageIcon iconOneVsCom = new ImageIcon("images/1vsCom.png");
+		Image imgOneVsCom = iconOneVsCom.getImage().getScaledInstance(btnOneVsCom.getWidth(), btnOneVsCom.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon iconOneVsComScale = new ImageIcon(imgOneVsCom);
+		
+		btnOneVsCom.setIcon(iconOneVsComScale);
+		btnOneVsCom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		pStartMenu.add(btnOneVsCom);
+		
+		JButton btnOneVsOneOnline = new JButton("1vs1Online");
+		btnOneVsOneOnline.setSize((int) (width / 3 * 0.9), (int) (height * 0.85));
+		btnOneVsOneOnline.setLocation(((width - (3 * btnOneVsOneOnline.getWidth())) / 4) * 3 + btnOneVsOne.getWidth() + btnOneVsCom.getWidth(), (int) (height * 0.05));
+		
+		ImageIcon iconOneVsOneOnline = new ImageIcon("images/1vs1Online.png");
+		Image imgOneVsOneOnline = iconOneVsOneOnline.getImage().getScaledInstance(btnOneVsOneOnline.getWidth(), btnOneVsOneOnline.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon iconOneVsOneOnlineScale = new ImageIcon(imgOneVsOneOnline);
+		
+		btnOneVsOneOnline.setIcon(iconOneVsOneOnlineScale);
+		btnOneVsOneOnline.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		pStartMenu.add(btnOneVsOneOnline);
+		
+		JButton btnBack = new JButton(om.getLang(langs.BTN_BACK));
+		btnBack.setSize(width / 7, height / 20);
+		btnBack.setLocation(width - btnBack.getWidth() - btnOneVsOne.getX(), height - btnBack.getHeight() - (height - btnBack.getHeight() - btnOneVsOneOnline.getY() - btnOneVsOneOnline.getHeight()) / 2);
+		btnBack.setFont(new Font("Monospace", Font.BOLD, (int) (btnBack.getHeight() * 0.7)));
+		btnBack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				clContent.show(frame.getContentPane(), ContentCards.MAINMENU.name());
+			}
+		});
+		
+		pStartMenu.add(btnBack);
+		
+		return pStartMenu;
 	}
 	
 	private void addOption(JPanel pParent, int iParent, String name, Component value)
