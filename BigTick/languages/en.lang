@@ -8,3 +8,7 @@ TAB_OPTIONS_GENERAL=General
 TAB_OPTIONS_GRAFICS=Graphics
 TAB_OPTIONS_SOUNDS=Sounds
 TAB_OPTIONS_RESOURCES=Resources
+PLAYER_CHANGE=Player <player>'s turn!
+GAME_PLAYER_WON=Player <player> win the game!
+GAME_PLAYER_LOSE=Player 1 lose the game!
+GAME_TIE=Tie!

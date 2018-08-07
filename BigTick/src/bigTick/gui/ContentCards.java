@@ -4,5 +4,7 @@ public enum ContentCards
 {
 	MAINMENU,
 	OPTIONS,
-	START;
+	START,
+	GAME_SINGLE,
+	GAME_MULTI;
 }
