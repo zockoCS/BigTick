@@ -1,8 +1,11 @@
 package bigTick.options;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -36,6 +39,18 @@ public class OptionManager
 	public void setOption(options option, Object value)
 	{
 		prop.put(option.name(), value);
+		try
+		{
+			prop.store(new DataOutputStream(new FileOutputStream(optionFile)), null);
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public String getLang(langs lang)

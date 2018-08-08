@@ -2,5 +2,6 @@ package bigTick.options;
 
 public enum options
 {
-	LANGUAGE;
+	LANGUAGE,
+	LINECOLOR;
 }

@@ -1,10 +1,8 @@
 package bigTick.gui;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -21,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 
+import bigTick.Init;
 import bigTick.options.OptionManager;
 import bigTick.options.langs;
 import bigTick.options.options;
@@ -32,19 +31,11 @@ public class GUI
 	private OptionManager om;
 	private final int width = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private final int height = Toolkit.getDefaultToolkit().getScreenSize().height;
-	private static JLabel field1;
-	private static JLabel field2;
-	private static JLabel field3;
-	private static JLabel field4;
-	private static JLabel field5;
-	private static JLabel field6;
-	private static JLabel field7;
-	private static JLabel field8;
-	private static JLabel field9;
-	private static ImageIcon iconFieldXScale;
-	private static ImageIcon iconFieldOScale;
-	private static ImageIcon iconFieldEmptyScale;
-
+	private JLabel lSinglePlayerChange;
+	private JLabel lSingleTie;
+	private JLabel lSinglePlayerWin;
+	private FieldPanel pField;
+	
 	public GUI(OptionManager om)
 	{
 		this.om = om;
@@ -231,6 +222,7 @@ public class GUI
 			public void actionPerformed(ActionEvent e)
 			{
 				clContent.show(frame.getContentPane(), ContentCards.GAME_SINGLE.name());
+				Init.startSingleGame();
 			}
 		});
 		pStartMenu.add(btnOneVsOne);
@@ -297,117 +289,54 @@ public class GUI
 
 		int iFieldMaxSize = (int) (getFieldMaxSize(pGameSingle) * 0.8);
 		
-		@SuppressWarnings("serial")
-		JPanel pField = new JPanel()
-		{
-			public void paintComponent(Graphics g)
-			{
-				g.setColor(Color.BLACK);
-				g.drawLine((int)(iFieldMaxSize * 0.33), 0, (int)(iFieldMaxSize * 0.33), iFieldMaxSize);
-				g.drawLine((int)(iFieldMaxSize * 0.33) + 1, 0, (int)(iFieldMaxSize * 0.33) + 1, iFieldMaxSize);
-				g.drawLine((int)(iFieldMaxSize * 0.66), 0, (int)(iFieldMaxSize * 0.66), iFieldMaxSize);
-				g.drawLine((int)(iFieldMaxSize * 0.66) + 1, 0, (int)(iFieldMaxSize * 0.66) + 1, iFieldMaxSize);
-				g.drawLine(0, (int)(iFieldMaxSize * 0.33), iFieldMaxSize, (int)(iFieldMaxSize * 0.33));
-				g.drawLine(0, (int)(iFieldMaxSize * 0.33) + 1, iFieldMaxSize, (int)(iFieldMaxSize * 0.33) + 1);
-				g.drawLine(0, (int)(iFieldMaxSize * 0.66), iFieldMaxSize, (int)(iFieldMaxSize * 0.66));
-				g.drawLine(0, (int)(iFieldMaxSize * 0.66) + 1, iFieldMaxSize, (int)(iFieldMaxSize * 0.66) + 1);
-			}
-		};
-		pField.setSize(iFieldMaxSize, iFieldMaxSize);
-		pField.setLocation((pGameSingle.getWidth() - pField.getWidth()) / 2, (pGameSingle.getHeight() - pField.getHeight()) / 2);
+		lSinglePlayerChange = new JLabel(om.getLang(langs.PLAYER_CHANGE).replace("<player>", "?"), JLabel.CENTER);
+		lSinglePlayerChange.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
+		lSinglePlayerChange.setLocation((pGameSingle.getWidth() - lSinglePlayerChange.getWidth()) / 2, (pGameSingle.getHeight() - lSinglePlayerChange.getHeight()) / 2);
+		lSinglePlayerChange.setFont(new Font("Monospace", Font.BOLD, (int) (lSinglePlayerChange.getHeight() * 0.8)));
+		lSinglePlayerChange.setVisible(false);
 		
-		ImageIcon iconFieldEmpty = new ImageIcon("images/Empty.png");
-		Image imgFieldEmpty = iconFieldEmpty.getImage().getScaledInstance(iFieldMaxSize / 3, iFieldMaxSize / 3, Image.SCALE_SMOOTH);
-		iconFieldEmptyScale = new ImageIcon(imgFieldEmpty);
+		pGameSingle.add(lSinglePlayerChange);
+
+		lSinglePlayerWin = new JLabel(om.getLang(langs.GAME_PLAYER_WON).replace("<player>", "?"), JLabel.CENTER);
+		lSinglePlayerWin.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
+		lSinglePlayerWin.setLocation((pGameSingle.getWidth() - lSinglePlayerWin.getWidth()) / 2, (pGameSingle.getHeight() - lSinglePlayerWin.getHeight()) / 2);
+		lSinglePlayerWin.setFont(new Font("Monospace", Font.BOLD, (int) (lSinglePlayerWin.getHeight() * 0.8)));
+		lSinglePlayerWin.setVisible(false);
 		
-		ImageIcon iconFieldX = new ImageIcon("images/X.png");
-		Image imgFieldX = iconFieldX.getImage().getScaledInstance(iFieldMaxSize / 3, iFieldMaxSize / 3, Image.SCALE_SMOOTH);
-		iconFieldXScale = new ImageIcon(imgFieldX);
+		pGameSingle.add(lSinglePlayerWin);
 		
-		ImageIcon iconFieldO = new ImageIcon("images/O.png");
-		Image imgFieldO = iconFieldO.getImage().getScaledInstance(iFieldMaxSize / 3, iFieldMaxSize / 3, Image.SCALE_SMOOTH);
-		iconFieldOScale = new ImageIcon(imgFieldO);
+		lSingleTie = new JLabel(om.getLang(langs.GAME_TIE), JLabel.CENTER);
+		lSingleTie.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
+		lSingleTie.setLocation((pGameSingle.getWidth() - lSingleTie.getWidth()) / 2, (pGameSingle.getHeight() - lSingleTie.getHeight()) / 2);
+		lSingleTie.setFont(new Font("Monospace", Font.BOLD, (int) (lSingleTie.getHeight() * 0.8)));
+		lSingleTie.setVisible(false);
 		
-		field1 = new JLabel();
-		field1.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field1.setLocation(0, iFieldMaxSize / 3 * 2);
-		field1.setIcon(iconFieldEmptyScale);
-		pField.add(field1);
-
-		field2 = new JLabel();
-		field2.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field2.setLocation(iFieldMaxSize / 3, iFieldMaxSize / 3 * 2);
-		field2.setIcon(iconFieldEmptyScale);
-		pField.add(field2);
-
-		field3 = new JLabel();
-		field3.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field3.setLocation(iFieldMaxSize / 3 * 2, iFieldMaxSize / 3 * 2);
-		field3.setIcon(iconFieldEmptyScale);
-		pField.add(field3);
-
-		field4 = new JLabel();
-		field4.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field4.setLocation(0, iFieldMaxSize / 3);
-		field4.setIcon(iconFieldEmptyScale);
-		pField.add(field4);
-
-		field5 = new JLabel();
-		field5.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field5.setLocation(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field5.setIcon(iconFieldEmptyScale);
-		pField.add(field5);
-
-		field6 = new JLabel();
-		field6.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field6.setLocation(iFieldMaxSize / 3 * 2, iFieldMaxSize / 3);
-		field6.setIcon(iconFieldEmptyScale);
-		pField.add(field6);
-
-		field7 = new JLabel();
-		field7.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field7.setLocation(0, 0);
-		field7.setIcon(iconFieldEmptyScale);
-		pField.add(field7);
-
-		field8 = new JLabel();
-		field8.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field8.setLocation(iFieldMaxSize / 3, 0);
-		field8.setIcon(iconFieldEmptyScale);
-		pField.add(field8);
-
-		field9 = new JLabel();
-		field9.setSize(iFieldMaxSize / 3, iFieldMaxSize / 3);
-		field9.setLocation(iFieldMaxSize / 3 * 2, 0);
-		field9.setIcon(iconFieldEmptyScale);
-		pField.add(field9);
+		pGameSingle.add(lSingleTie);
+		
+		pField = new FieldPanel(om, iFieldMaxSize, pGameSingle);
 		
 		pGameSingle.add(pField);
 		
-		//Change "?" to number of player
-		JLabel lPlayerChange = new JLabel(om.getLang(langs.PLAYER_CHANGE).replace("<player>", "?"), JLabel.CENTER);
-		lPlayerChange.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
-		lPlayerChange.setLocation((pGameSingle.getWidth() - lPlayerChange.getWidth()) / 2, (pGameSingle.getHeight() - lPlayerChange.getHeight()) / 2);
-		lPlayerChange.setFont(new Font("Monospace", Font.BOLD, (int) (lPlayerChange.getHeight() * 0.8)));
-		lPlayerChange.setVisible(false);
-		
-		pGameSingle.add(lPlayerChange);
+		JButton btnBack = new JButton(om.getLang(langs.BTN_BACK));
+		btnBack.setSize(width / 7, height / 20);
+		btnBack.setLocation(width - btnBack.getWidth() - (width / 40), height - btnBack.getHeight() - (height / 40));
+		btnBack.setFont(new Font("Monospace", Font.BOLD, (int) (btnBack.getHeight() * 0.7)));
+		btnBack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				clContent.show(frame.getContentPane(), ContentCards.MAINMENU.name());
+				
+				for (int i = 1; i <= 9; i++)
+				{
+					Init.fieldStates.replace(String.valueOf(i), "E");
+				}
 
-		//Change "?" to number of player
-		JLabel lPlayerWin = new JLabel(om.getLang(langs.GAME_PLAYER_WON).replace("<player>", "?"), JLabel.CENTER);
-		lPlayerWin.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
-		lPlayerWin.setLocation((pGameSingle.getWidth() - lPlayerWin.getWidth()) / 2, (pGameSingle.getHeight() - lPlayerWin.getHeight()) / 2);
-		lPlayerWin.setFont(new Font("Monospace", Font.BOLD, (int) (lPlayerWin.getHeight() * 0.8)));
-		lPlayerWin.setVisible(false);
+				pField.changeField(0, "");
+			}
+		});
 		
-		pGameSingle.add(lPlayerWin);
-		
-		JLabel lTie = new JLabel(om.getLang(langs.GAME_TIE), JLabel.CENTER);
-		lTie.setSize(iFieldMaxSize, (int) (iFieldMaxSize * 0.1));
-		lTie.setLocation((pGameSingle.getWidth() - lTie.getWidth()) / 2, (pGameSingle.getHeight() - lTie.getHeight()) / 2);
-		lTie.setFont(new Font("Monospace", Font.BOLD, (int) (lTie.getHeight() * 0.8)));
-		
-		pGameSingle.add(lTie);
+		pGameSingle.add(btnBack);
 		
 		return pGameSingle;
 	}
@@ -421,32 +350,75 @@ public class GUI
 		
 		return pGameMulti;
 	}
+	
+	public void changePlayerSingle(String playername)
+	{
+		lSinglePlayerChange.setText(om.getLang(langs.PLAYER_CHANGE).replace("<player>", playername));
+		lSinglePlayerChange.setVisible(true);
+		try
+		{
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		lSinglePlayerChange.setVisible(false);
+	}
+	
+	public void displayWin(String winner)
+	{
+		if (winner.equals("T"))
+		{
+			lSingleTie.setVisible(true);
+			try
+			{
+				Thread.sleep(3000);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			lSingleTie.setVisible(false);
+		}
+		else if (winner.equals("X"))
+		{
+			lSinglePlayerWin.setText(om.getLang(langs.GAME_PLAYER_WON).replace("<player>", "1"));
+			lSinglePlayerWin.setVisible(true);
+			try
+			{
+				Thread.sleep(3000);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			lSinglePlayerWin.setVisible(false);
+		}
+		else if (winner.equals("O"))
+		{
+			lSinglePlayerWin.setText(om.getLang(langs.GAME_PLAYER_WON).replace("<player>", "2"));
+			lSinglePlayerWin.setVisible(true);
+			try
+			{
+				Thread.sleep(3000);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			lSinglePlayerWin.setVisible(false);
+		}
+		
+		clContent.show(frame.getContentPane(), ContentCards.START.name());
+	}
 
 	private int getFieldMaxSize(JPanel pGame)
 	{
 		if (pGame.getWidth() < pGame.getHeight()) return pGame.getWidth();
 		else return pGame.getHeight();
 	}
-	
-	public static void changeField(int id, String player)
-	{
-		JLabel field = new JLabel();
 
-		if (id == 1) field = field1;
-		else if (id == 2) field = field2;
-		else if (id == 3) field = field3;
-		else if (id == 4) field = field4;
-		else if (id == 5) field = field5;
-		else if (id == 6) field = field6;
-		else if (id == 7) field = field7;
-		else if (id == 8) field = field8;
-		else if (id == 9) field = field9;
-
-		if (player.equals("X")) field.setIcon(iconFieldXScale);
-		else if (player.equals("O")) field.setIcon(iconFieldOScale);
-		else if (player.equals("E")) field.setIcon(iconFieldEmptyScale);
-	}
-	
 	private void addOption(JPanel pParent, int iParent, String name, Component value)
 	{
 		JPanel pOption = new JPanel();
@@ -474,5 +446,10 @@ public class GUI
 	{
 		if (frame.isVisible()) frame.setVisible(false);
 		else frame.setVisible(true);
+	}
+
+	public void changeField(int id, String player)
+	{
+		pField.changeField(id, player);
 	}
 }
